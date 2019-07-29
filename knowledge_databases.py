@@ -8,20 +8,43 @@ Base.metadata.create_all(engine)
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-def add_article():
-	pass
+def add_article(wikiname,topic,rating):
+	knowledge_object = Knowledge(
+		wikiName = wikiname,
+		topic = topic,
+		rating = rating)
+	session.add(knowledge_object)
+	session.commit()
+
+add_article("name","topic",1)	
 
 def query_all_articles():
-	pass
+	articles = session.query(Knowledge).all()
+	return articles
 
-def query_article_by_topic():
-	pass
+def query_article_by_topic(topic):
+	article = session.query(Knowledge).filter_by(topic = topic).first()
+	return article
 
-def delete_article_by_topic():
-	pass
+def query_article_by_rating(threshold):
+	articles = []
+	for i in range(threshold):
+		articles.append(session.query(Knowledge).filter_by(rating = i).all())
+	return articles
+
+def query_article_by_primary_key(key):
+	article = session.query(Knowledge).filter_by(knowledge_id = key).first()
+		
+def delete_article_by_topic(topic):
+	session.query(Knowledge).filter_by(topic = topic).delete()
+	session.commit()
 
 def delete_all_articles():
-	pass
+	session.query(Knowledge).delete()
 
 def edit_article_rating():
 	pass
+
+
+delete_all_articles()
+print(query_all_articles())
